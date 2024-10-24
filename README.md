@@ -34,5 +34,5 @@ Poussez vers la branche (git push origin feature/NouvelleFonctionnalite)
 Ouvrez une Pull Request
 
 Auteurs
-Développeur principal - @Kangouuu
+Développeur principal - [@Kangouuu](https://github.com/Kangouuu)
 https://github.com/user-attachments/assets/a8ff3719-ad3b-4e2a-8788-51ea9c5f6921
