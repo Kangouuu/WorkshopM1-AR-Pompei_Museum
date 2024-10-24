@@ -6,10 +6,10 @@ import ARKit
 // Vue principale qui gère l'AR et la carte
 struct ARMapView: View {
     let monuments = [
-        Monument(name: "Dancing Faun", description: "Un autre monument avec une riche histoire de l'époque romaine.", coordinate: CLLocationCoordinate2D(latitude: 40.7512, longitude: 14.4875), modelFileName: "Monument2Scene.usdz"),
-        Monument(name: "Jar Pompeii", description: "Ce monument est connu pour son architecture unique et ses fresques anciennes.", coordinate: CLLocationCoordinate2D(latitude: 40.7515, longitude: 14.4878), modelFileName: "Monument3Scene.usdz"),
-        Monument(name: "Public Water Fountain", description: "Ce monument est un témoignage de l'ingénierie romaine et est situé au coeur de la ville.", coordinate: CLLocationCoordinate2D(latitude: 40.7518, longitude: 14.4872), modelFileName: "Monument4Scene.usdz"),
-        Monument(name: "Mosaic Fountain", description: "Un monument qui représente l'époque médiévale avec des influences architecturales notables.", coordinate: CLLocationCoordinate2D(latitude: 40.7520, longitude: 14.4870), modelFileName: "Monument5Scene.usdz")
+        Monument(name: "Monument 2", description: "Un autre monument avec une riche histoire de l'époque romaine.", coordinate: CLLocationCoordinate2D(latitude: 40.7512, longitude: 14.4875), modelFileName: "Monument2Scene.usdz"),
+        Monument(name: "Monument 3", description: "Ce monument est connu pour son architecture unique et ses fresques anciennes.", coordinate: CLLocationCoordinate2D(latitude: 40.7515, longitude: 14.4878), modelFileName: "Monument3Scene.usdz"),
+        Monument(name: "Monument 4", description: "Ce monument est un témoignage de l'ingénierie romaine et est situé au coeur de la ville.", coordinate: CLLocationCoordinate2D(latitude: 40.7518, longitude: 14.4872), modelFileName: "Monument4Scene.usdz"),
+        Monument(name: "Monument 5", description: "Un monument qui représente l'époque médiévale avec des influences architecturales notables.", coordinate: CLLocationCoordinate2D(latitude: 40.7520, longitude: 14.4870), modelFileName: "Monument5Scene.usdz")
     ]
     
     let ago = CLLocationCoordinate2D(latitude: 40.7505, longitude: 14.4866)
@@ -72,56 +72,57 @@ struct ARMapView: View {
                     }
                     .padding()
                 }
-                Spacer()
                 
-                // Boutons et informations placés en bas
-                VStack {
-
-                    // Barre en bas avec navigation et bouton AR
-                    HStack {
-                        Button(action: {
-                            showPreviousMonument()
-                        }) {
-                            Image(systemName: "chevron.left.circle.fill")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 50, height: 50)
-                                .foregroundColor(.black)
-                                .background(Color.white)
-                                .clipShape(Circle())
-                                .shadow(radius: 5)
-                        }
-                        .padding(.horizontal, 5)
-
-                        Text(monuments[selectedMonumentIndex].name)
-                            .font(.system(size: 20))
-                            .fontWeight(.bold)
-                        Button(action: {
-                            showNextMonument()
-                        }) {
-                            Image(systemName: "chevron.right.circle.fill")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 50, height: 50)
-                                .foregroundColor(.black)
-                                .background(Color.white)
-                                .clipShape(Circle())
-                                .shadow(radius: 5)
-                        }
-                        Button(action: {
-                            showARView = true
-                        }) {
-                            Text("Voir \(selectedMonument.name) en AR")
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.black)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                                .shadow(radius: 5)
-                        }
+                // Interface pour sélectionner le monument
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        showPreviousMonument()
+                    }) {
+                        Image(systemName: "chevron.left.circle.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 50, height: 50)
+                            .foregroundColor(.black)
+                            .background(Color.white)
+                            .clipShape(Circle())
+                            .shadow(radius: 5)
                     }
+                    .padding(.horizontal, 5)
+                    
+                    Text(monuments[selectedMonumentIndex].name)
+                        .font(.title)
+                        .padding()
+                    
+                    Button(action: {
+                        showNextMonument()
+                    }) {
+                        Image(systemName: "chevron.right.circle.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 50, height: 50)
+                            .foregroundColor(.black)
+                            .background(Color.white)
+                            .clipShape(Circle())
+                            .shadow(radius: 5)
+                    }
+                    .padding(.horizontal, 5)
+                    Spacer()
                 }
-                .padding(.bottom, 20)  // Espace en bas pour ne pas coller aux bords
+                
+                // Bouton pour visualiser le monument sélectionné en AR
+                Button(action: {
+                    showARView = true
+                }) {
+                    Text("Voir \(selectedMonument.name) en AR")
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                .padding(.bottom, 20)
+                
+                Spacer()
             }
         }
         .sheet(isPresented: $showDetailView) {
@@ -151,26 +152,14 @@ struct ARMapView: View {
 struct ARSceneView: UIViewControllerRepresentable {
     let monuments: [Monument]
     @Binding var selectedMonumentIndex: Int
-    @Environment(\.presentationMode) var presentationMode // Permet de gérer le retour
 
     func makeUIViewController(context: Context) -> UIViewController {
         let viewController = UIViewController()
-        
-        // Vue AR
         let sceneView = ARSCNView(frame: viewController.view.bounds)
         viewController.view.addSubview(sceneView)
 
         let configuration = ARWorldTrackingConfiguration()
         sceneView.session.run(configuration)
-
-        // Ajouter une vue SwiftUI pour gérer le bouton de retour
-        let hostingController = UIHostingController(rootView: BackButtonView {
-            context.coordinator.dismissARView() // Appelle la fonction de retour
-        })
-        
-        hostingController.view.backgroundColor = .clear
-        hostingController.view.frame = CGRect(x: 20, y: 50, width: 50, height: 50)
-        viewController.view.addSubview(hostingController.view)
 
         // Charger le monument sélectionné
         loadMonumentModel(sceneView: sceneView, modelFileName: monuments[selectedMonumentIndex].modelFileName)
@@ -182,79 +171,25 @@ struct ARSceneView: UIViewControllerRepresentable {
 
     // Fonction pour charger un modèle 3D
     private func loadMonumentModel(sceneView: ARSCNView, modelFileName: String) {
-        // Ajout d'un message pour vérifier quel modèle est chargé
-        print("Chargement du monument : \(modelFileName)")
-        
-        // Supprimer tous les anciens modèles avant de charger le nouveau
-        sceneView.scene.rootNode.childNodes.forEach { $0.removeFromParentNode() }
-        
-        // Charger le modèle 3D
-        guard let scene = SCNScene(named: modelFileName) else {
-            print("Erreur : Impossible de charger le fichier de modèle \(modelFileName)")
-            return
-        }
-        
-        sceneView.scene = scene
+        if let scene = SCNScene(named: modelFileName) {
+            sceneView.scene = scene
 
-        if let modelNode = scene.rootNode.childNodes.first {
-            let monumentSizeFactor: Float = 0.08
-            
-            // Ajustement de l'échelle et vérification que le modèle est bien visible
-            modelNode.scale = SCNVector3(monumentSizeFactor, monumentSizeFactor, monumentSizeFactor)
-            print("Le modèle \(modelFileName) a été chargé avec succès.")
-        } else {
-            print("Erreur : Aucun nœud trouvé dans le modèle \(modelFileName)")
-        }
+            if let modelNode = scene.rootNode.childNodes.first {
+                let monumentSizeFactor: Float = 0.08
+                modelNode.scale = SCNVector3(monumentSizeFactor, monumentSizeFactor, monumentSizeFactor)
+            }
 
-        // Ajouter lumière
-        let lightNode = SCNNode()
-        let light = SCNLight()
-        light.type = .directional
-        light.intensity = 1000
-        lightNode.light = light
-        lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
-        scene.rootNode.addChildNode(lightNode)
-    }
-
-    func makeCoordinator() -> Coordinator {
-        return Coordinator(self)
-    }
-
-    class Coordinator: NSObject {
-        var parent: ARSceneView
-
-        init(_ parent: ARSceneView) {
-            self.parent = parent
-        }
-
-        @objc func dismissARView() {
-            parent.presentationMode.wrappedValue.dismiss() // Revenir à la vue précédente
+            // Ajouter lumière
+            let lightNode = SCNNode()
+            let light = SCNLight()
+            light.type = .directional
+            light.intensity = 1000
+            lightNode.light = light
+            lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
+            scene.rootNode.addChildNode(lightNode)
         }
     }
 }
-
-// Vue pour le bouton de retour
-struct BackButtonView: View {
-    var action: () -> Void
-
-    var body: some View {
-        Button(action: {
-            action()
-        }) {
-            Image(systemName: "arrow.backward.circle.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 50, height: 50)
-                .foregroundColor(.black)
-                .background(Color.white)
-                .clipShape(Circle())
-                .shadow(radius: 5)
-        }
-        .padding()
-    }
-}
-
-
 
 struct Monument: Identifiable, Equatable {
     let id = UUID()
