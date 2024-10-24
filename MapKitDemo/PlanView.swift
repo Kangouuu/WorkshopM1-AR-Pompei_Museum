@@ -109,46 +109,44 @@ struct ARMapView: View {
             }
             
             if showMonumentDetail {
-                VStack {
-                    
-                    HStack {
-                        Spacer()
-                        VStack {
-                            Button(action: {
-                                showMonumentDetail = false
-                            }) {
-                                Image(systemName: "xmark")
-                                               .foregroundColor(.white)
-                                               .padding()
-                                               .background(Color.black)
-                                               .clipShape(Circle())
-                            }
-                            SceneView(
-                                scene: SCNScene(named: "WorkshopScene.usdz"),
-                                options: [.allowsCameraControl]
-                            )
-                            .frame(width: 100, height: 100) // Augmentation de la taille du SceneView
-                            .cornerRadius(10)
-                            .padding(.top, 0)
-                            .padding(.bottom, 0)
-                            
-                            Text(selectedMonument.name)
+                HStack {
+                    Spacer()
+                    VStack {
+                        Button(action: {
+                            showMonumentDetail = false
+                        }) {
+                            Text("Fermer")
                                 .font(.headline)
-                                .padding(.bottom, 0)
-                            
-                            Text(selectedMonument.description)
-                                .font(.body)
-                                .padding(.horizontal)
-                                .padding(.bottom, 0)
-                            
-                            .padding()
+                                .padding()
+                                .background(Color.blue)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
                         }
-                        .frame(width: UIScreen.main.bounds.width * 0.5, height: UIScreen.main.bounds.height * 0.8) // Centrer la frame et ajuster la largeur
-                        .background(Color.white)
-                        .cornerRadius(15)
-                        Spacer()
+                        SceneView(
+                            scene: SCNScene(named: "WorkshopScene.usdz"),
+                            options: [.allowsCameraControl]
+                        )
+                        .frame(width: 100, height: 200) // Augmentation de la taille du SceneView
+                        .cornerRadius(10)
+                        .padding(.top, 0)
+                        .padding(.bottom, 0)
+                        
+                        Text(selectedMonument.name)
+                            .font(.headline)
+                            .padding(.bottom, 0)
+                        
+                        Text(selectedMonument.description)
+                            .font(.body)
+                            .padding(.horizontal)
+                            .padding(.bottom, 0)
+                        
+                        
+                        .padding()
                     }
-
+                    .frame(width: UIScreen.main.bounds.width*0.4, height: UIScreen.main.bounds.height*1)
+                    .background(Color.white)
+                    .cornerRadius(15)
+                    .shadow(radius: 10)
                 }
             }
         }

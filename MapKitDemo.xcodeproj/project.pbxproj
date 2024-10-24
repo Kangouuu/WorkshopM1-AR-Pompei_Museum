@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44C541E02CCAF8F800C2CC8C /* WorkshopScene.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 44C541DE2CCAF8F800C2CC8C /* WorkshopScene.usdz */; };
 		83D4564B2A607A2400277EA8 /* MapKitDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D4564A2A607A2400277EA8 /* MapKitDemoApp.swift */; };
 		83D4564D2A607A2400277EA8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D4564C2A607A2400277EA8 /* ContentView.swift */; };
 		83D456522A607A2500277EA8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83D456512A607A2500277EA8 /* Preview Assets.xcassets */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		44C541DF2CCAF8F800C2CC8C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file; name = Base; path = Base.lproj/WorkshopScene.usdz; sourceTree = "<group>"; };
 		83D456472A607A2400277EA8 /* MapKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MapKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		83D4564A2A607A2400277EA8 /* MapKitDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitDemoApp.swift; sourceTree = "<group>"; };
 		83D4564C2A607A2400277EA8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -74,6 +76,7 @@
 				F7081EBE2CCA342E0015D1EA /* Monument3Scene.usdz */,
 				F7081EBF2CCA342E0015D1EA /* Monument4Scene.usdz */,
 				F7081EC72CCA34420015D1EA /* Monument5Scene.usdz */,
+				44C541DE2CCAF8F800C2CC8C /* WorkshopScene.usdz */,
 				F735DB872CC9557400A77C2D /* Package.realitycomposerpro */,
 				83D456482A607A2400277EA8 /* Products */,
 				83D456502A607A2500277EA8 /* Preview Content */,
@@ -156,6 +159,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F735DB882CC9557400A77C2D /* Package.realitycomposerpro in Resources */,
+				44C541E02CCAF8F800C2CC8C /* WorkshopScene.usdz in Resources */,
 				83D456522A607A2500277EA8 /* Preview Assets.xcassets in Resources */,
 				F7081EBD2CCA331F0015D1EA /* Monument2Scene.usdz in Resources */,
 				F7081EC42CCA342E0015D1EA /* Monument3Scene.usdz in Resources */,
@@ -181,6 +185,14 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		44C541DE2CCAF8F800C2CC8C /* WorkshopScene.usdz */ = {
+			isa = PBXVariantGroup;
+			children = (
+				44C541DF2CCAF8F800C2CC8C /* Base */,
+			);
+			name = WorkshopScene.usdz;
+			sourceTree = "<group>";
+		};
 		F7081EBB2CCA331F0015D1EA /* Monument2Scene.usdz */ = {
 			isa = PBXVariantGroup;
 			children = (
