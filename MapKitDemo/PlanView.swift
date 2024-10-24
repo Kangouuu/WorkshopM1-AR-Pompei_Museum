@@ -21,77 +21,106 @@ struct ARMapView: View {
     @State private var recenterOnAGO = false
     @State private var showDetailView = false
     @Environment(\.presentationMode) var presentationMode
-    @State private var showARView = false
+    
+    @State private var showARView = false // État pour gérer la présentation de la vue AR
 
     var selectedMonument: Monument {
         monuments[selectedMonumentIndex]
     }
 
     var body: some View {
-        ZStack {
-            if let _ = try? ARImageDetectionView(userLocation: ago, showMap: $showMap, mapPosition: $mapPosition, mapSize: $mapSize, selectedMonumentIndex: $selectedMonumentIndex) {
+        NavigationView {
+            ZStack {
                 ARImageDetectionView(userLocation: ago, showMap: $showMap, mapPosition: $mapPosition, mapSize: $mapSize, selectedMonumentIndex: $selectedMonumentIndex)
                     .edgesIgnoringSafeArea(.all)
-            }
-            
-            if showMap, let mapPosition = mapPosition, let mapSize = mapSize {
-                MapView(monuments: monuments, userLocation: ago, selectedMonument: $selectedMonumentIndex, recenterOnAGO: $recenterOnAGO, showDetailView: $showDetailView)
-                    .frame(width: mapSize.width, height: mapSize.height)
-                    .cornerRadius(10)
-                    .background(Color.white.opacity(0))
-                    .position(mapPosition)
-                    .transition(.move(edge: .bottom))
-                    .animation(.easeInOut, value: showMap)
-            }
-            
-            VStack {
-                HStack {
-                    Button(action: {
-                        presentationMode.wrappedValue.dismiss()
-                    }) {
-                        Image(systemName: "arrow.backward.circle.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 50, height: 50)
-                            .foregroundColor(.black)
-                            .background(Color.white)
-                            .clipShape(Circle())
-                    }
-                    .padding()
                     
-                    Spacer()
-
-                    Button(action: recenterOnAGOLocation) {
-                        Image(systemName: "location.circle.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 50, height: 50)
-                            .foregroundColor(.black)
-                            .background(Color.white)
-                            .clipShape(Circle())
-                    }
-                    .padding()
-                }
-                Spacer()
-                
-                // Bouton pour afficher la scène AR du monument sélectionné
-                Button(action: {
-                    showARView = true
-                }) {
-                    Text("Voir en AR")
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
+                if showMap, let mapPosition = mapPosition, let mapSize = mapSize {
+                    MapView(monuments: monuments, userLocation: ago, selectedMonument: $selectedMonumentIndex, recenterOnAGO: $recenterOnAGO, showDetailView: $showDetailView)
+                        .frame(width: mapSize.width, height: mapSize.height)
                         .cornerRadius(10)
+                        .background(Color.white.opacity(0))
+                        .position(mapPosition)
+                        .transition(.move(edge: .bottom))
+                        .animation(.easeInOut, value: showMap)
                 }
-                .padding(.bottom, 20)
+                
+                VStack {
+                    HStack {
+                        Button(action: {
+                            presentationMode.wrappedValue.dismiss()
+                        }) {
+                            Image(systemName: "arrow.backward.circle.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 50, height: 50)
+                                .foregroundColor(.black)
+                                .background(Color.white)
+                                .clipShape(Circle())
+                        }
+                        .padding()
+                        
+                        Spacer()
+
+                        Button(action: recenterOnAGOLocation) {
+                            Image(systemName: "location.circle.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 50, height: 50)
+                                .foregroundColor(.black)
+                                .background(Color.white)
+                                .clipShape(Circle())
+                        }
+                        .padding()
+                    }
+                    Spacer()
+                    
+                    HStack {
+                        Spacer()
+                        NavigationLink(
+                            destination: ARMonumentViewWrapper(modelFileName: selectedMonument.modelFileName),
+                            isActive: $showARView,
+                            label: {
+                                EmptyView()
+                            }
+                        )
+                        
+                        Button(action: {
+                            showPreviousMonument()
+                            showARView = true
+                        }) {
+                            Image(systemName: "chevron.left.circle.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 50, height: 50)
+                                .foregroundColor(.black)
+                                .background(Color.white)
+                                .clipShape(Circle())
+                                .shadow(radius: 5)
+                        }
+                        .padding(.horizontal, 5)
+                        
+                        Button(action: {
+                            showNextMonument()
+                            showARView = true
+                        }) {
+                            Image(systemName: "chevron.right.circle.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 50, height: 50)
+                                .foregroundColor(.black)
+                                .background(Color.white)
+                                .clipShape(Circle())
+                                .shadow(radius: 5)
+                        }
+                        .padding(.horizontal, 5)
+                        Spacer()
+                    }
+                    .padding(.bottom, 20)
+                }
             }
         }
         .sheet(isPresented: $showDetailView) {
             MonumentDetailView(monument: selectedMonument)
-        }
-        .sheet(isPresented: $showARView) {
-            ARSceneView(monuments: monuments, selectedMonumentIndex: $selectedMonumentIndex)
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
@@ -110,92 +139,6 @@ struct ARMapView: View {
     }
 }
 
-// Nouveau ARSceneView pour afficher la scène AR et naviguer entre les monuments
-struct ARSceneView: UIViewControllerRepresentable {
-    let monuments: [Monument]
-    @Binding var selectedMonumentIndex: Int
-
-    func makeUIViewController(context: Context) -> UIViewController {
-        let viewController = UIViewController()
-        let sceneView = ARSCNView(frame: viewController.view.bounds)
-        viewController.view.addSubview(sceneView)
-
-        let configuration = ARWorldTrackingConfiguration()
-        sceneView.session.run(configuration)
-
-        // Charger le premier monument
-        loadMonumentModel(sceneView: sceneView, modelFileName: monuments[selectedMonumentIndex].modelFileName)
-
-        // Ajouter boutons de navigation pour se déplacer entre les monuments
-        let previousButton = UIButton(type: .system)
-        previousButton.setTitle("Précédent", for: .normal)
-        previousButton.frame = CGRect(x: 20, y: viewController.view.bounds.height - 60, width: 100, height: 40)
-        previousButton.addTarget(context.coordinator, action: #selector(context.coordinator.showPreviousMonument), for: .touchUpInside)
-
-        let nextButton = UIButton(type: .system)
-        nextButton.setTitle("Suivant", for: .normal)
-        nextButton.frame = CGRect(x: viewController.view.bounds.width - 120, y: viewController.view.bounds.height - 60, width: 100, height: 40)
-        nextButton.addTarget(context.coordinator, action: #selector(context.coordinator.showNextMonument), for: .touchUpInside)
-
-        viewController.view.addSubview(previousButton)
-        viewController.view.addSubview(nextButton)
-
-        return viewController
-    }
-
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
-
-    // Fonction pour charger un modèle 3D
-    private func loadMonumentModel(sceneView: ARSCNView, modelFileName: String) {
-        if let scene = SCNScene(named: modelFileName) {
-            sceneView.scene = scene
-
-            if let modelNode = scene.rootNode.childNodes.first {
-                let monumentSizeFactor: Float = 0.08
-                modelNode.scale = SCNVector3(monumentSizeFactor, monumentSizeFactor, monumentSizeFactor)
-            }
-
-            // Ajouter lumière
-            let lightNode = SCNNode()
-            let light = SCNLight()
-            light.type = .directional
-            light.intensity = 1000
-            lightNode.light = light
-            lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
-            scene.rootNode.addChildNode(lightNode)
-        }
-    }
-
-    func makeCoordinator() -> Coordinator {
-        return Coordinator(self)
-    }
-
-    class Coordinator: NSObject {
-        var parent: ARSceneView
-        var sceneView: ARSCNView?
-
-        init(_ parent: ARSceneView) {
-            self.parent = parent
-        }
-
-        // Naviguer vers le monument précédent
-        @objc func showPreviousMonument() {
-            parent.selectedMonumentIndex = (parent.selectedMonumentIndex - 1 + parent.monuments.count) % parent.monuments.count
-            if let sceneView = sceneView {
-                parent.loadMonumentModel(sceneView: sceneView, modelFileName: parent.monuments[parent.selectedMonumentIndex].modelFileName)
-            }
-        }
-
-        // Naviguer vers le monument suivant
-        @objc func showNextMonument() {
-            parent.selectedMonumentIndex = (parent.selectedMonumentIndex + 1) % parent.monuments.count
-            if let sceneView = sceneView {
-                parent.loadMonumentModel(sceneView: sceneView, modelFileName: parent.monuments[parent.selectedMonumentIndex].modelFileName)
-            }
-        }
-    }
-}
-
 struct Monument: Identifiable, Equatable {
     let id = UUID()
     let name: String
@@ -208,6 +151,154 @@ struct Monument: Identifiable, Equatable {
     }
 }
 
+// Optimisation de la vue MapView
+struct MapView: UIViewRepresentable {
+    let monuments: [Monument]
+    let userLocation: CLLocationCoordinate2D
+    @Binding var selectedMonument: Int
+    @Binding var recenterOnAGO: Bool
+    @Binding var showDetailView: Bool
+
+    func makeUIView(context: Context) -> MKMapView {
+        let mapView = MKMapView(frame: .zero)
+        
+        let camera = MKMapCamera(lookingAtCenter: userLocation, fromDistance: 500, pitch: 60, heading: 0)
+        mapView.camera = camera
+        mapView.mapType = .mutedStandard
+        
+        mapView.showsPointsOfInterest = false
+        mapView.showsUserLocation = true
+        
+        mapView.delegate = context.coordinator
+        
+        // Ajout des annotations de manière plus efficace
+        let annotations = monuments.map { monument in
+            Custom3DAnnotation(coordinate: monument.coordinate, title: monument.name)
+        }
+        mapView.addAnnotations(annotations)
+        
+        return mapView
+    }
+
+    func updateUIView(_ mapView: MKMapView, context: Context) {
+        if recenterOnAGO {
+            let camera = MKMapCamera(lookingAtCenter: userLocation, fromDistance: 500, pitch: 60, heading: 0)
+            mapView.setCamera(camera, animated: true)
+            DispatchQueue.main.async {
+                recenterOnAGO = false
+            }
+        } else {
+            let selectedMonument = monuments[selectedMonument]
+            let camera = MKMapCamera(lookingAtCenter: selectedMonument.coordinate, fromDistance: 200, pitch: 75, heading: 0)
+            mapView.setCamera(camera, animated: true)
+        }
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        return Coordinator(self)
+    }
+
+    class Coordinator: NSObject, MKMapViewDelegate {
+        var parent: MapView
+
+        init(_ parent: MapView) {
+            self.parent = parent
+        }
+        
+        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+            guard let customAnnotation = annotation as? Custom3DAnnotation else { return nil }
+
+            let identifier = "3DMonument"
+            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+
+            if annotationView == nil {
+                annotationView = MKAnnotationView(annotation: customAnnotation, reuseIdentifier: identifier)
+                annotationView?.canShowCallout = true
+                annotationView?.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+
+                // Utilisation d'une vue simplifiée pour alléger la carte
+                annotationView?.image = UIImage(systemName: "mappin.circle.fill")
+            } else {
+                annotationView?.annotation = annotation
+            }
+
+            return annotationView
+        }
+        
+        func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+            if let annotation = view.annotation as? Custom3DAnnotation, let index = parent.monuments.firstIndex(where: { $0.name == annotation.title }) {
+                parent.selectedMonument = index
+                parent.showDetailView = true
+            }
+        }
+    }
+}
+
+class Custom3DAnnotation: NSObject, MKAnnotation {
+    var coordinate: CLLocationCoordinate2D
+    var title: String?
+
+    init(coordinate: CLLocationCoordinate2D, title: String?) {
+        self.coordinate = coordinate
+        self.title = title
+    }
+}
+
+// Vue 3D pour les détails du monument
+struct Scene3DView: UIViewRepresentable {
+    let modelFileName: String
+
+    func makeUIView(context: Context) -> SCNView {
+        let sceneView = SCNView(frame: .zero)
+        if let scene = SCNScene(named: modelFileName) {
+            sceneView.scene = scene
+            sceneView.allowsCameraControl = true
+            sceneView.autoenablesDefaultLighting = true
+        }
+        return sceneView
+    }
+
+    func updateUIView(_ uiView: SCNView, context: Context) {
+        // Mises à jour si nécessaire
+    }
+}
+
+// Vue détaillée du monument
+struct MonumentDetailView: View {
+    let monument: Monument
+
+    var body: some View {
+        VStack {
+            Text(monument.name)
+                .font(.largeTitle)
+                .padding()
+            Text(monument.description)
+                .padding()
+
+            // Vue 3D pour afficher le modèle du monument
+            Scene3DView(modelFileName: monument.modelFileName)
+                .frame(width: 300, height: 300)
+                .padding()
+
+            Spacer()
+        }
+        .navigationTitle("Monument Details")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+// Wrapper pour ARMonumentView pour éviter l'erreur de portée
+struct ARMonumentViewWrapper: View {
+    let modelFileName: String
+
+    var body: some View {
+        Scene3DView(modelFileName: modelFileName)
+            .navigationTitle("AR Monument View")
+            .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+// Vue pour la détection d'image en AR
 struct ARImageDetectionView: UIViewRepresentable {
     let userLocation: CLLocationCoordinate2D
     @Binding var showMap: Bool
@@ -307,134 +398,5 @@ struct ARImageDetectionView: UIViewRepresentable {
                 self?.parent.mapSize = size
             }
         }
-    }
-}
-
-struct MapView: UIViewRepresentable {
-    let monuments: [Monument]
-    let userLocation: CLLocationCoordinate2D
-    @Binding var selectedMonument: Int
-    @Binding var recenterOnAGO: Bool
-    @Binding var showDetailView: Bool
-
-    func makeUIView(context: Context) -> MKMapView {
-        let mapView = MKMapView(frame: .zero)
-        
-        let camera = MKMapCamera(lookingAtCenter: userLocation, fromDistance: 500, pitch: 60, heading: 0)
-        mapView.camera = camera
-        mapView.mapType = .mutedStandard
-        
-        mapView.showsPointsOfInterest = false
-        mapView.showsUserLocation = true
-        
-        mapView.delegate = context.coordinator
-        
-        for monument in monuments {
-            let annotation = Custom3DAnnotation(coordinate: monument.coordinate, title: monument.name)
-            mapView.addAnnotation(annotation)
-        }
-        
-        return mapView
-    }
-
-    func updateUIView(_ mapView: MKMapView, context: Context) {
-        if recenterOnAGO {
-            let camera = MKMapCamera(lookingAtCenter: userLocation, fromDistance: 500, pitch: 60, heading: 0)
-            mapView.setCamera(camera, animated: true)
-            DispatchQueue.main.async {
-                recenterOnAGO = false
-            }
-        } else {
-            let selectedMonument = monuments[selectedMonument]
-            let camera = MKMapCamera(lookingAtCenter: selectedMonument.coordinate, fromDistance: 200, pitch: 75, heading: 0)
-            mapView.setCamera(camera, animated: true)
-        }
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        return Coordinator(self)
-    }
-
-    class Coordinator: NSObject, MKMapViewDelegate {
-        var parent: MapView
-
-        init(_ parent: MapView) {
-            self.parent = parent
-        }
-        
-        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-            guard let customAnnotation = annotation as? Custom3DAnnotation else { return nil }
-
-            let identifier = "3DMonument"
-            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-
-            if annotationView == nil {
-                annotationView = MKAnnotationView(annotation: customAnnotation, reuseIdentifier: identifier)
-                annotationView?.canShowCallout = true
-                annotationView?.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
-
-                if let monument = parent.monuments.first(where: { $0.name == customAnnotation.title }) {
-                    if let scene = SCNScene(named: monument.modelFileName) {
-                        let sceneView = SCNView(frame: CGRect(x: 0, y: 0, width: 150, height: 150))
-                        sceneView.scene = scene
-                        sceneView.allowsCameraControl = true
-                        sceneView.backgroundColor = .clear
-
-                        if let modelNode = scene.rootNode.childNodes.first {
-                            let monumentSizeFactor: Float = 0.08
-                            modelNode.scale = SCNVector3(monumentSizeFactor, monumentSizeFactor, monumentSizeFactor)
-                        }
-
-                        let lightNode = SCNNode()
-                        let light = SCNLight()
-                        light.type = .directional
-                        light.intensity = 1000
-                        lightNode.light = light
-                        lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
-                        scene.rootNode.addChildNode(lightNode)
-
-                        annotationView?.addSubview(sceneView)
-                    }
-                }
-            } else {
-                annotationView?.annotation = annotation
-            }
-
-            return annotationView
-        }
-        
-        func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-            if let annotation = view.annotation as? Custom3DAnnotation, let index = parent.monuments.firstIndex(where: { $0.name == annotation.title }) {
-                parent.selectedMonument = index
-                parent.showDetailView = true
-            }
-        }
-    }
-}
-
-struct MonumentDetailView: View {
-    let monument: Monument
-
-    var body: some View {
-        VStack {
-            Text(monument.name)
-                .font(.largeTitle)
-                .padding()
-            Text(monument.description)
-                .padding()
-            Spacer()
-        }
-        .navigationTitle("Monument Details")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-class Custom3DAnnotation: NSObject, MKAnnotation {
-    var coordinate: CLLocationCoordinate2D
-    var title: String?
-
-    init(coordinate: CLLocationCoordinate2D, title: String?) {
-        self.coordinate = coordinate
-        self.title = title
     }
 }
