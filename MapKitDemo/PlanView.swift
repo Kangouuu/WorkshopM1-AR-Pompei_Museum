@@ -6,166 +6,70 @@ import ARKit
 // Vue principale qui gère l'AR et la carte
 struct ARMapView: View {
     let monuments = [
-        Monument(name: "Monument 1", description: "Ce monument est un symbole historique important de la ville de Pompei.", coordinate: CLLocationCoordinate2D(latitude: 40.7505, longitude: 14.4866)),
-        Monument(name: "Monument 2", description: "Un autre monument avec une riche histoire de l'époque romaine.", coordinate: CLLocationCoordinate2D(latitude: 40.751, longitude: 14.487)),
-        Monument(name: "Monument 3", description: "Ce monument est connu pour son architecture unique et ses fresques anciennes.", coordinate: CLLocationCoordinate2D(latitude: 40.7515, longitude: 14.4875))
+        Monument(name: "Monument 1", coordinate: CLLocationCoordinate2D(latitude: 43.654823, longitude: -79.391623)),
+        Monument(name: "Monument 2", coordinate: CLLocationCoordinate2D(latitude: 43.654957, longitude: -79.393223)),
+        Monument(name: "Monument 3", coordinate: CLLocationCoordinate2D(latitude: 43.655, longitude: -79.394))
     ]
     
-    let ago = CLLocationCoordinate2D(latitude: 40.7505, longitude: 14.4866)
+    let ago = CLLocationCoordinate2D(latitude: 43.653823848647725, longitude: -79.3925230435043)
     
-    @State private var selectedMonumentIndex = 0
+    @State private var selectedMonument = Monument(name: "Monument 1", coordinate: CLLocationCoordinate2D(latitude: 43.654823, longitude: -79.391623))
     @State private var showMap = false
     @State private var mapPosition: CGPoint? = nil
     @State private var mapSize: CGSize? = nil
-    @State private var recenterOnAGO = false
-    @State private var showMonumentDetail = false
-    @Environment(\.presentationMode) var presentationMode
-    var selectedMonument: Monument {
-        monuments[selectedMonumentIndex]
-    }
 
     var body: some View {
         ZStack {
-            if let _ = try? ARImageDetectionView(userLocation: ago, showMap: $showMap, mapPosition: $mapPosition, mapSize: $mapSize) {
-                ARImageDetectionView(userLocation: ago, showMap: $showMap, mapPosition: $mapPosition, mapSize: $mapSize)
-                    .edgesIgnoringSafeArea(.all)
-            }
+            ARImageDetectionView(userLocation: ago, showMap: $showMap, mapPosition: $mapPosition, mapSize: $mapSize)
+                .edgesIgnoringSafeArea(.all)
             
             if showMap, let mapPosition = mapPosition, let mapSize = mapSize {
-                MapView(monuments: monuments, userLocation: ago, selectedMonument: $selectedMonumentIndex, recenterOnAGO: $recenterOnAGO, showMonumentDetail: $showMonumentDetail)
+                MapView(monuments: monuments, userLocation: ago, selectedMonument: $selectedMonument)
                     .frame(width: mapSize.width, height: mapSize.height)
                     .cornerRadius(10)
-                    .background(Color.white.opacity(0))
+                    .background(Color.white.opacity(0.9))
                     .position(mapPosition)
                     .transition(.move(edge: .bottom))
                     .animation(.easeInOut, value: showMap)
             }
             
             VStack {
-                HStack {
-                    Button(action: {
-                        presentationMode.wrappedValue.dismiss()
-                    }) {
-                        Image(systemName: "arrow.backward.circle.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 50, height: 50)
-                            .foregroundColor(.black)
-                            .background(Color.white)
-                            .clipShape(Circle())
-                    }
-                    .padding()
-                    
-                    Spacer()
-
-                    // Bouton pour recentrer sur AGO à droite
-                    Button(action: recenterOnAGOLocation) {
-                        Image(systemName: "location.circle.fill")  // Utilisation d'une icône SF Symbols pour le bouton de localisation
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 50, height: 50)
-                            .foregroundColor(.black)
-                            .background(Color.white)
-                            .clipShape(Circle())
-                    }
-                    .padding()
-                }
                 Spacer()
                 
                 HStack {
-                    Spacer()
-                    Button(action: {
-                        showPreviousMonument()
-                        showMonumentDetail = true
-                    }) {
-                        Image(systemName: "chevron.left.circle.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 50, height: 50)
-                            .foregroundColor(.black)
-                            .background(Color.white)
-                            .clipShape(Circle())
-                            .shadow(radius: 5)
+                    Button(action: showPreviousMonument) {
+                        Text("Monument Précédent")
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
                     }
-                    .padding(.horizontal, 5)
                     
-                    Button(action: {
-                        showNextMonument()
-                        showMonumentDetail = true
-                    }) {
-                        Image(systemName: "chevron.right.circle.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 50, height: 50)
-                            .foregroundColor(.black)
-                            .background(Color.white)
-                            .clipShape(Circle())
-                            .shadow(radius: 5)
+                    Button(action: showNextMonument) {
+                        Text("Monument Suivant")
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
                     }
-                    .padding(.horizontal, 5)
-                    Spacer()
                 }
-                .padding(.bottom, 20)
-            }
-            
-            if showMonumentDetail {
-                HStack {
-                    Spacer()
-                    VStack {
-                        Button(action: {
-                            showMonumentDetail = false
-                        }) {
-                            Text("Fermer")
-                                .font(.headline)
-                                .padding()
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                        }
-                        SceneView(
-                            scene: SCNScene(named: "WorkshopScene.usdz"),
-                            options: [.allowsCameraControl]
-                        )
-                        .frame(width: 100, height: 200) // Augmentation de la taille du SceneView
-                        .cornerRadius(10)
-                        .padding(.top, 0)
-                        .padding(.bottom, 0)
-                        
-                        Text(selectedMonument.name)
-                            .font(.headline)
-                            .padding(.bottom, 0)
-                        
-                        Text(selectedMonument.description)
-                            .font(.body)
-                            .padding(.horizontal)
-                            .padding(.bottom, 0)
-                        
-                        
-                        .padding()
-                    }
-                    .frame(width: UIScreen.main.bounds.width*0.4, height: UIScreen.main.bounds.height*1)
-                    .background(Color.white)
-                    .cornerRadius(15)
-                    .shadow(radius: 10)
-                }
+                .padding(.bottom, 50)
             }
         }
-        .navigationBarBackButtonHidden(true) // Masque le bouton "Back" en haut à gauche
-        .navigationBarHidden(true) // Cache complètement la barre de navigation
-        
     }
     
     private func showPreviousMonument() {
-        selectedMonumentIndex = (selectedMonumentIndex - 1 + monuments.count) % monuments.count
+        if let currentIndex = monuments.firstIndex(of: selectedMonument) {
+            let previousIndex = (currentIndex - 1 + monuments.count) % monuments.count
+            selectedMonument = monuments[previousIndex]
+        }
     }
 
     private func showNextMonument() {
-        selectedMonumentIndex = (selectedMonumentIndex + 1) % monuments.count
-    }
-    
-    // Fonction pour recentrer la carte sur AGO
-    private func recenterOnAGOLocation() {
-        recenterOnAGO = true
+        if let currentIndex = monuments.firstIndex(of: selectedMonument) {
+            let nextIndex = (currentIndex + 1) % monuments.count
+            selectedMonument = monuments[nextIndex]
+        }
     }
 }
 
@@ -176,26 +80,12 @@ struct ARMapView: View {
 struct Monument: Identifiable, Equatable {
     let id = UUID()
     let name: String
-    let description: String
     let coordinate: CLLocationCoordinate2D
     
     static func ==(lhs: Monument, rhs: Monument) -> Bool {
         return lhs.id == rhs.id
     }
 }
-
-// ... (ARImageDetectionView et MapView restent inchangés)
-// ... (ARImageDetectionView et MapView restent inchangés)
-
-// ... (ARImageDetectionView et MapView restent inchangés)
-
-// ... (ARImageDetectionView et MapView restent inchangés)
-
-// ... (ARImageDetectionView et MapView restent inchangés)
-
-
-// ... (ARImageDetectionView et MapView restent inchangés)
-
 
 struct ARImageDetectionView: UIViewRepresentable {
     let userLocation: CLLocationCoordinate2D
@@ -236,8 +126,8 @@ struct ARImageDetectionView: UIViewRepresentable {
             if let imageAnchor = anchor as? ARImageAnchor {
                 let referenceImage = imageAnchor.referenceImage
                 
-                DispatchQueue.main.async { [weak self] in
-                    self?.parent.showMap = true
+                DispatchQueue.main.async {
+                    self.parent.showMap = true
                 }
                 
                 let plane = SCNPlane(width: referenceImage.physicalSize.width, height: referenceImage.physicalSize.height)
@@ -257,8 +147,8 @@ struct ARImageDetectionView: UIViewRepresentable {
         
         func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
             if let imageAnchor = anchor as? ARImageAnchor {
-                DispatchQueue.main.async { [weak self] in
-                    self?.parent.showMap = imageAnchor.isTracked
+                DispatchQueue.main.async {
+                    self.parent.showMap = imageAnchor.isTracked
                 }
                 
                 updateMapPosition(renderer: renderer, node: node)
@@ -267,8 +157,8 @@ struct ARImageDetectionView: UIViewRepresentable {
 
         func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
             if anchor is ARImageAnchor {
-                DispatchQueue.main.async { [weak self] in
-                    self?.parent.showMap = false
+                DispatchQueue.main.async {
+                    self.parent.showMap = false
                 }
             }
         }
@@ -279,8 +169,8 @@ struct ARImageDetectionView: UIViewRepresentable {
             let projectedPoint = sceneView.projectPoint(node.position)
             let screenPoint = CGPoint(x: CGFloat(projectedPoint.x), y: CGFloat(projectedPoint.y))
             
-            DispatchQueue.main.async { [weak self] in
-                self?.parent.mapPosition = screenPoint
+            DispatchQueue.main.async {
+                self.parent.mapPosition = screenPoint
             }
         }
         
@@ -291,8 +181,8 @@ struct ARImageDetectionView: UIViewRepresentable {
             
             let size = CGSize(width: physicalWidth * screenScale * 1000, height: physicalHeight * screenScale * 1000)
             
-            DispatchQueue.main.async { [weak self] in
-                self?.parent.mapSize = size
+            DispatchQueue.main.async {
+                self.parent.mapSize = size
             }
         }
     }
@@ -301,37 +191,21 @@ struct ARImageDetectionView: UIViewRepresentable {
 struct MapView: UIViewRepresentable {
     let monuments: [Monument]
     let userLocation: CLLocationCoordinate2D
-    @Binding var selectedMonument: Int
-    @Binding var recenterOnAGO: Bool
-    @Binding var showMonumentDetail: Bool
+    @Binding var selectedMonument: Monument
 
     func makeUIView(context: Context) -> MKMapView {
         let mapView = MKMapView(frame: .zero)
         
-        let camera = MKMapCamera(lookingAtCenter: userLocation, fromDistance: 500, pitch: 60, heading: 0)
+        // Activer l'affichage des bâtiments 3D
+        mapView.showsBuildings = true
+        
+        // Configuration de la caméra pour une vue 3D
+        let camera = MKMapCamera(lookingAtCenter: userLocation, fromDistance: 200, pitch: 80, heading: 0)
         mapView.camera = camera
         mapView.mapType = .mutedStandard
-        
         mapView.showsPointsOfInterest = false
-        mapView.showsUserLocation = true
-        
+        mapView.showsUserLocation = false
         mapView.delegate = context.coordinator
-        
-        // Limiter la zone visible à une région définie autour des monuments
-        let minLatitude = monuments.map { $0.coordinate.latitude }.min() ?? userLocation.latitude
-        let maxLatitude = monuments.map { $0.coordinate.latitude }.max() ?? userLocation.latitude
-        let minLongitude = monuments.map { $0.coordinate.longitude }.min() ?? userLocation.longitude
-        let maxLongitude = monuments.map { $0.coordinate.longitude }.max() ?? userLocation.longitude
-        
-        let centerCoordinate = CLLocationCoordinate2D(latitude: (minLatitude + maxLatitude) / 2, longitude: (minLongitude + maxLongitude) / 2)
-        let region = MKCoordinateRegion(center: centerCoordinate, span: MKCoordinateSpan(latitudeDelta: (maxLatitude - minLatitude) * 1.5, longitudeDelta: (maxLongitude - minLongitude) * 1.5))
-
-        let boundary = MKMapView.CameraBoundary(coordinateRegion: region)
-        mapView.setCameraBoundary(boundary, animated: true)
-
-        // Optionnel : Limiter également le niveau de zoom
-        let zoomRange = MKMapView.CameraZoomRange(minCenterCoordinateDistance: 100, maxCenterCoordinateDistance: 1000)
-        mapView.setCameraZoomRange(zoomRange, animated: true)
 
         for monument in monuments {
             let annotation = Custom3DAnnotation(coordinate: monument.coordinate, title: monument.name)
@@ -342,31 +216,59 @@ struct MapView: UIViewRepresentable {
     }
 
     func updateUIView(_ mapView: MKMapView, context: Context) {
-        if recenterOnAGO {
-            // Recentrer la caméra sur AGO quand recenterOnAGO est true
-            let camera = MKMapCamera(lookingAtCenter: userLocation, fromDistance: 500, pitch: 60, heading: 0)
-            mapView.setCamera(camera, animated: true)
-            DispatchQueue.main.async {
-                recenterOnAGO = false // Reset de l'état après l'animation
-            }
-        } else {
-            let selectedMonument = monuments[selectedMonument]
-            let camera = MKMapCamera(lookingAtCenter: selectedMonument.coordinate, fromDistance: 200, pitch: 75, heading: 0)
-            mapView.setCamera(camera, animated: true)
-        }
+        // Mise à jour de la caméra pour une vue 3D plus prononcée
+        let camera = MKMapCamera(lookingAtCenter: selectedMonument.coordinate,
+                                 fromDistance: 150,  // Distance ajustée pour être plus proche du monument
+                                 pitch: 85,          // Inclinaison élevée pour une vue en perspective
+                                 heading: 45)        // Angle horizontal ajusté pour un effet oblique
+        mapView.setCamera(camera, animated: true)
     }
     
     func makeCoordinator() -> Coordinator {
-        return Coordinator(self)
+        return Coordinator(self, monuments: monuments)
     }
 
     class Coordinator: NSObject, MKMapViewDelegate {
         var parent: MapView
+        var monuments: [Monument]
 
-        init(_ parent: MapView) {
+        // Définir les limites autorisées
+        var boundingRegion: MKCoordinateRegion
+        
+        init(_ parent: MapView, monuments: [Monument]) {
             self.parent = parent
+            self.monuments = monuments
+            
+            let coordinates = monuments.map { $0.coordinate }
+            let latitudes = coordinates.map { $0.latitude }
+            let longitudes = coordinates.map { $0.longitude }
+            let center = CLLocationCoordinate2D(latitude: (latitudes.max()! + latitudes.min()!) / 2,
+                                                longitude: (longitudes.max()! + longitudes.min()!) / 2)
+            let span = MKCoordinateSpan(latitudeDelta: (latitudes.max()! - latitudes.min()!) * 1.5,
+                                        longitudeDelta: (longitudes.max()! - longitudes.min()!) * 1.5)
+            boundingRegion = MKCoordinateRegion(center: center, span: span)
         }
         
+        func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+            // Empêcher l'utilisateur de naviguer en dehors de la région définie
+            let currentRegion = mapView.region
+            let maxLat = boundingRegion.center.latitude + boundingRegion.span.latitudeDelta / 2
+            let minLat = boundingRegion.center.latitude - boundingRegion.span.latitudeDelta / 2
+            let maxLon = boundingRegion.center.longitude + boundingRegion.span.longitudeDelta / 2
+            let minLon = boundingRegion.center.longitude - boundingRegion.span.longitudeDelta / 2
+            
+            let currentMaxLat = currentRegion.center.latitude + currentRegion.span.latitudeDelta / 2
+            let currentMinLat = currentRegion.center.latitude - currentRegion.span.latitudeDelta / 2
+            let currentMaxLon = currentRegion.center.longitude + currentRegion.span.longitudeDelta / 2
+            let currentMinLon = currentRegion.center.longitude - currentRegion.span.longitudeDelta / 2
+            
+            // Si la région actuelle dépasse les limites, on la réinitialise
+            if currentMaxLat > maxLat || currentMinLat < minLat || currentMaxLon > maxLon || currentMinLon < minLon {
+                mapView.setRegion(boundingRegion, animated: true)
+            }
+        }
+
+        // Fonction pour rendre les annotations en 3D
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
             guard let customAnnotation = annotation as? Custom3DAnnotation else { return nil }
 
@@ -375,44 +277,39 @@ struct MapView: UIViewRepresentable {
 
             if annotationView == nil {
                 annotationView = MKAnnotationView(annotation: customAnnotation, reuseIdentifier: identifier)
-                annotationView?.canShowCallout = true
-                annotationView?.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+                annotationView?.canShowCallout = false
                 
-                if let scene = SCNScene(named: "WorkshopScene.usdz") {
-                    let sceneView = SCNView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-                    sceneView.scene = scene
-                    sceneView.allowsCameraControl = true
-                    sceneView.backgroundColor = .clear
-                    
-                    if let modelNode = scene.rootNode.childNodes.first {
-                        let monumentSizeFactor: Float = 0.1  // Ajuster l'échelle selon les besoins
-                        modelNode.scale = SCNVector3(monumentSizeFactor, monumentSizeFactor, monumentSizeFactor)
-                    }
-                    
+                // Création d'une scène SCNNode directement dans la carte
+                let scene = SCNScene(named: "WorkshopScene.usdz")
+                
+                if let modelNode = scene?.rootNode.childNodes.first {
+                    let monumentSizeFactor: Float = 0.1
+                    modelNode.scale = SCNVector3(monumentSizeFactor, monumentSizeFactor, monumentSizeFactor)
+                    modelNode.position = SCNVector3(0, 1, 0)
+                    modelNode.eulerAngles = SCNVector3(0, Float.pi / 4, 0)
+
+                    // Lumière directionnelle pour éclairer l'objet 3D
                     let lightNode = SCNNode()
                     let light = SCNLight()
                     light.type = .directional
                     light.intensity = 1000
                     lightNode.light = light
                     lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
-                    scene.rootNode.addChildNode(lightNode)
-
-                    annotationView?.addSubview(sceneView)
+                    modelNode.addChildNode(lightNode)
+                    
+                    // Ajouter la vue 3D en tant que sous-vue de l'annotation
+                    let scnView = SCNView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+                    scnView.scene = scene
+                    scnView.allowsCameraControl = true
+                    scnView.backgroundColor = UIColor.clear
+                    
+                    annotationView?.addSubview(scnView)
                 }
             } else {
                 annotationView?.annotation = annotation
             }
 
             return annotationView
-        }
-        
-        func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-            DispatchQueue.main.async { [weak self] in
-                self?.parent.showMonumentDetail = true
-                if let index = self?.parent.monuments.firstIndex(where: { $0.name == view.annotation?.title ?? "" }) {
-                    self?.parent.selectedMonument = index
-                }
-            }
         }
     }
 }
