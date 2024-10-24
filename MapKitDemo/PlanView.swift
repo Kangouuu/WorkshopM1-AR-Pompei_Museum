@@ -6,9 +6,9 @@ import ARKit
 // Vue principale qui gère l'AR et la carte
 struct ARMapView: View {
     let monuments = [
-        Monument(name: "Monument 1", description: "Ce monument est un symbole historique important de la ville de Pompei.", coordinate: CLLocationCoordinate2D(latitude: 40.7505, longitude: 14.4866), modelFileName: "Monument1Scene.usdz"),
-        Monument(name: "Monument 2", description: "Un autre monument avec une riche histoire de l'époque romaine.", coordinate: CLLocationCoordinate2D(latitude: 40.751, longitude: 14.487), modelFileName: "Monument2Scene.usdz"),
-        Monument(name: "Monument 3", description: "Ce monument est connu pour son architecture unique et ses fresques anciennes.", coordinate: CLLocationCoordinate2D(latitude: 40.7515, longitude: 14.4875), modelFileName: "Monument3Scene.usdz")
+        Monument(name: "Monument 1", description: "Ce monument est un symbole historique important de la ville de Pompei.", coordinate: CLLocationCoordinate2D(latitude: 40.7505, longitude: 14.4866)),
+        Monument(name: "Monument 2", description: "Un autre monument avec une riche histoire de l'époque romaine.", coordinate: CLLocationCoordinate2D(latitude: 40.751, longitude: 14.487)),
+        Monument(name: "Monument 3", description: "Ce monument est connu pour son architecture unique et ses fresques anciennes.", coordinate: CLLocationCoordinate2D(latitude: 40.7515, longitude: 14.4875))
     ]
     
     let ago = CLLocationCoordinate2D(latitude: 40.7505, longitude: 14.4866)
@@ -60,7 +60,7 @@ struct ARMapView: View {
 
                     // Bouton pour recentrer sur AGO à droite
                     Button(action: recenterOnAGOLocation) {
-                        Image(systemName: "location.circle.fill")
+                        Image(systemName: "location.circle.fill")  // Utilisation d'une icône SF Symbols pour le bouton de localisation
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 50, height: 50)
@@ -110,7 +110,7 @@ struct ARMapView: View {
             
             if showMonumentDetail {
                 VStack {
-                    Spacer()
+                    
                     HStack {
                         Spacer()
                         VStack {
@@ -123,16 +123,14 @@ struct ARMapView: View {
                                                .background(Color.black)
                                                .clipShape(Circle())
                             }
-                            if let scene = SCNScene(named: selectedMonument.modelFileName) {
-                                SceneView(
-                                    scene: scene,
-                                    options: [.allowsCameraControl]
-                                )
-                                .frame(width: 100, height: 200)
-                                .cornerRadius(10)
-                                .padding(.top, 0)
-                                .padding(.bottom, 0)
-                            }
+                            SceneView(
+                                scene: SCNScene(named: "WorkshopScene.usdz"),
+                                options: [.allowsCameraControl]
+                            )
+                            .frame(width: 100, height: 100) // Augmentation de la taille du SceneView
+                            .cornerRadius(10)
+                            .padding(.top, 0)
+                            .padding(.bottom, 0)
                             
                             Text(selectedMonument.name)
                                 .font(.headline)
@@ -145,18 +143,18 @@ struct ARMapView: View {
                             
                             .padding()
                         }
-                        .frame(width: UIScreen.main.bounds.width * 0.5, height: UIScreen.main.bounds.height * 0.8)
+                        .frame(width: UIScreen.main.bounds.width * 0.5, height: UIScreen.main.bounds.height * 0.8) // Centrer la frame et ajuster la largeur
                         .background(Color.white)
                         .cornerRadius(15)
-                    
                         Spacer()
                     }
 
                 }
             }
         }
-        .navigationBarBackButtonHidden(true)
-        .navigationBarHidden(true)
+        .navigationBarBackButtonHidden(true) // Masque le bouton "Back" en haut à gauche
+        .navigationBarHidden(true) // Cache complètement la barre de navigation
+        
     }
     
     private func showPreviousMonument() {
@@ -167,6 +165,7 @@ struct ARMapView: View {
         selectedMonumentIndex = (selectedMonumentIndex + 1) % monuments.count
     }
     
+    // Fonction pour recentrer la carte sur AGO
     private func recenterOnAGOLocation() {
         recenterOnAGO = true
     }
@@ -181,12 +180,24 @@ struct Monument: Identifiable, Equatable {
     let name: String
     let description: String
     let coordinate: CLLocationCoordinate2D
-    let modelFileName: String
     
     static func ==(lhs: Monument, rhs: Monument) -> Bool {
         return lhs.id == rhs.id
     }
 }
+
+// ... (ARImageDetectionView et MapView restent inchangés)
+// ... (ARImageDetectionView et MapView restent inchangés)
+
+// ... (ARImageDetectionView et MapView restent inchangés)
+
+// ... (ARImageDetectionView et MapView restent inchangés)
+
+// ... (ARImageDetectionView et MapView restent inchangés)
+
+
+// ... (ARImageDetectionView et MapView restent inchangés)
+
 
 struct ARImageDetectionView: UIViewRepresentable {
     let userLocation: CLLocationCoordinate2D
@@ -368,29 +379,27 @@ struct MapView: UIViewRepresentable {
                 annotationView = MKAnnotationView(annotation: customAnnotation, reuseIdentifier: identifier)
                 annotationView?.canShowCallout = true
                 annotationView?.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
-
-                if let monument = parent.monuments.first(where: { $0.name == customAnnotation.title }) {
-                    if let scene = SCNScene(named: monument.modelFileName) {
-                        let sceneView = SCNView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-                        sceneView.scene = scene
-                        sceneView.allowsCameraControl = true
-                        sceneView.backgroundColor = .clear
-
-                        if let modelNode = scene.rootNode.childNodes.first {
-                            let monumentSizeFactor: Float = 0.1
-                            modelNode.scale = SCNVector3(monumentSizeFactor, monumentSizeFactor, monumentSizeFactor)
-                        }
-
-                        let lightNode = SCNNode()
-                        let light = SCNLight()
-                        light.type = .directional
-                        light.intensity = 1000
-                        lightNode.light = light
-                        lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
-                        scene.rootNode.addChildNode(lightNode)
-
-                        annotationView?.addSubview(sceneView)
+                
+                if let scene = SCNScene(named: "WorkshopScene.usdz") {
+                    let sceneView = SCNView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+                    sceneView.scene = scene
+                    sceneView.allowsCameraControl = true
+                    sceneView.backgroundColor = .clear
+                    
+                    if let modelNode = scene.rootNode.childNodes.first {
+                        let monumentSizeFactor: Float = 0.1  // Ajuster l'échelle selon les besoins
+                        modelNode.scale = SCNVector3(monumentSizeFactor, monumentSizeFactor, monumentSizeFactor)
                     }
+                    
+                    let lightNode = SCNNode()
+                    let light = SCNLight()
+                    light.type = .directional
+                    light.intensity = 1000
+                    lightNode.light = light
+                    lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
+                    scene.rootNode.addChildNode(lightNode)
+
+                    annotationView?.addSubview(sceneView)
                 }
             } else {
                 annotationView?.annotation = annotation
