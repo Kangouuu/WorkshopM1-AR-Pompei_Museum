@@ -1,0 +1,228 @@
+{
+  "54387720-C165-4290-9573-F8D2A010AA05" : {
+    "objectMetadataList" : [
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "Scene004"
+      ],
+      {
+        "disallowsFraming" : false,
+        "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "ParticleEmitter"
+      ],
+      {
+        "disallowsFraming" : false,
+        "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "_CLEANED_FILE__Chouette_Animations_MDH_83_002"
+      ],
+      {
+        "disallowsFraming" : false,
+        "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "Clipboard"
+      ],
+      {
+        "disallowsFraming" : false,
+        "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "DirectionalLight"
+      ],
+      {
+        "disallowsFraming" : false,
+        "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "All",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "Scene002",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "Scene007"
+      ],
+      {
+        "disallowsFraming" : false,
+        "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "Scene003"
+      ],
+      {
+        "disallowsFraming" : false,
+        "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "All",
+        "Track4"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "Scene001",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "Timeline",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "Phoenix",
+        "Track2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "SkySphere"
+      ],
+      {
+        "disallowsFraming" : true,
+        "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "_CLEANED_FILE__Chouette_Animations_MDH_83_005"
+      ],
+      {
+        "disallowsFraming" : false,
+        "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "All"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "Scene005",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "All",
+        "Track3"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "Phoenix",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "Scene006"
+      ],
+      {
+        "disallowsFraming" : false,
+        "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "54387720-C165-4290-9573-F8D2A010AA05",
+        "Root",
+        "SkyDome"
+      ],
+      {
+        "disallowsFraming" : true,
+        "isExpanded" : false,
+        "isLocked" : false
+      }
+    ]
+  },
+  "E427B119-722A-4B60-8F13-6BE88C45C0D0" : {
+    "objectMetadataList" : [
+
+    ]
+  }
+}

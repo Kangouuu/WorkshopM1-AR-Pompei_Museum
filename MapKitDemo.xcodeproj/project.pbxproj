@@ -1,0 +1,424 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		83D4564B2A607A2400277EA8 /* MapKitDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D4564A2A607A2400277EA8 /* MapKitDemoApp.swift */; };
+		83D4564D2A607A2400277EA8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D4564C2A607A2400277EA8 /* ContentView.swift */; };
+		83D456522A607A2500277EA8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83D456512A607A2500277EA8 /* Preview Assets.xcassets */; };
+		F7081EBD2CCA331F0015D1EA /* Monument2Scene.usdz in Resources */ = {isa = PBXBuildFile; fileRef = F7081EBB2CCA331F0015D1EA /* Monument2Scene.usdz */; };
+		F7081EC42CCA342E0015D1EA /* Monument3Scene.usdz in Resources */ = {isa = PBXBuildFile; fileRef = F7081EBE2CCA342E0015D1EA /* Monument3Scene.usdz */; };
+		F7081EC52CCA342E0015D1EA /* Monument4Scene.usdz in Resources */ = {isa = PBXBuildFile; fileRef = F7081EBF2CCA342E0015D1EA /* Monument4Scene.usdz */; };
+		F7081EC92CCA34420015D1EA /* Monument5Scene.usdz in Resources */ = {isa = PBXBuildFile; fileRef = F7081EC72CCA34420015D1EA /* Monument5Scene.usdz */; };
+		F735DB882CC9557400A77C2D /* Package.realitycomposerpro in Resources */ = {isa = PBXBuildFile; fileRef = F735DB872CC9557400A77C2D /* Package.realitycomposerpro */; };
+		F79541CA2CC8EB010043C209 /* PlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79541C92CC8EB010043C209 /* PlanView.swift */; };
+		F7FAFB5F2CC7D757008030D7 /* ARKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7FAFB5E2CC7D757008030D7 /* ARKit.framework */; };
+		F7FAFB612CC7DCD9008030D7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F7FAFB602CC7DCD9008030D7 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		83D456472A607A2400277EA8 /* MapKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MapKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		83D4564A2A607A2400277EA8 /* MapKitDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitDemoApp.swift; sourceTree = "<group>"; };
+		83D4564C2A607A2400277EA8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		83D456512A607A2500277EA8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F7081EBC2CCA331F0015D1EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file; name = Base; path = Base.lproj/Monument2Scene.usdz; sourceTree = "<group>"; };
+		F7081EC12CCA342E0015D1EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file; name = Base; path = Base.lproj/Monument3Scene.usdz; sourceTree = "<group>"; };
+		F7081EC32CCA342E0015D1EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file; name = Base; path = Base.lproj/Monument4Scene.usdz; sourceTree = "<group>"; };
+		F7081EC82CCA34420015D1EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file; name = Base; path = Base.lproj/Monument5Scene.usdz; sourceTree = "<group>"; };
+		F735DB872CC9557400A77C2D /* Package.realitycomposerpro */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Package.realitycomposerpro; sourceTree = "<group>"; };
+		F79541C92CC8EB010043C209 /* PlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanView.swift; sourceTree = "<group>"; };
+		F7FAFB5E2CC7D757008030D7 /* ARKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ARKit.framework; path = System/Library/Frameworks/ARKit.framework; sourceTree = SDKROOT; };
+		F7FAFB602CC7DCD9008030D7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		83D456442A607A2400277EA8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F7FAFB5F2CC7D757008030D7 /* ARKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		83D4563E2A607A2400277EA8 = {
+			isa = PBXGroup;
+			children = (
+				83D456492A607A2400277EA8 /* MapKitDemo */,
+				F7FAFB5D2CC7D757008030D7 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		83D456482A607A2400277EA8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				83D456472A607A2400277EA8 /* MapKitDemo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		83D456492A607A2400277EA8 /* MapKitDemo */ = {
+			isa = PBXGroup;
+			children = (
+				F79541C92CC8EB010043C209 /* PlanView.swift */,
+				83D4564A2A607A2400277EA8 /* MapKitDemoApp.swift */,
+				83D4564C2A607A2400277EA8 /* ContentView.swift */,
+				F7FAFB602CC7DCD9008030D7 /* Assets.xcassets */,
+				F7081EBB2CCA331F0015D1EA /* Monument2Scene.usdz */,
+				F7081EBE2CCA342E0015D1EA /* Monument3Scene.usdz */,
+				F7081EBF2CCA342E0015D1EA /* Monument4Scene.usdz */,
+				F7081EC72CCA34420015D1EA /* Monument5Scene.usdz */,
+				F735DB872CC9557400A77C2D /* Package.realitycomposerpro */,
+				83D456482A607A2400277EA8 /* Products */,
+				83D456502A607A2500277EA8 /* Preview Content */,
+			);
+			path = MapKitDemo;
+			sourceTree = "<group>";
+		};
+		83D456502A607A2500277EA8 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				83D456512A607A2500277EA8 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		F7FAFB5D2CC7D757008030D7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F7FAFB5E2CC7D757008030D7 /* ARKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		83D456462A607A2400277EA8 /* MapKitDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 83D456552A607A2500277EA8 /* Build configuration list for PBXNativeTarget "MapKitDemo" */;
+			buildPhases = (
+				83D456432A607A2400277EA8 /* Sources */,
+				83D456442A607A2400277EA8 /* Frameworks */,
+				83D456452A607A2400277EA8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MapKitDemo;
+			productName = MapKitDemo;
+			productReference = 83D456472A607A2400277EA8 /* MapKitDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		83D4563F2A607A2400277EA8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					83D456462A607A2400277EA8 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = 83D456422A607A2400277EA8 /* Build configuration list for PBXProject "MapKitDemo" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 83D4563E2A607A2400277EA8;
+			productRefGroup = 83D456482A607A2400277EA8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				83D456462A607A2400277EA8 /* MapKitDemo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		83D456452A607A2400277EA8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F735DB882CC9557400A77C2D /* Package.realitycomposerpro in Resources */,
+				83D456522A607A2500277EA8 /* Preview Assets.xcassets in Resources */,
+				F7081EBD2CCA331F0015D1EA /* Monument2Scene.usdz in Resources */,
+				F7081EC42CCA342E0015D1EA /* Monument3Scene.usdz in Resources */,
+				F7081EC52CCA342E0015D1EA /* Monument4Scene.usdz in Resources */,
+				F7081EC92CCA34420015D1EA /* Monument5Scene.usdz in Resources */,
+				F7FAFB612CC7DCD9008030D7 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		83D456432A607A2400277EA8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83D4564D2A607A2400277EA8 /* ContentView.swift in Sources */,
+				83D4564B2A607A2400277EA8 /* MapKitDemoApp.swift in Sources */,
+				F79541CA2CC8EB010043C209 /* PlanView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		F7081EBB2CCA331F0015D1EA /* Monument2Scene.usdz */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F7081EBC2CCA331F0015D1EA /* Base */,
+			);
+			name = Monument2Scene.usdz;
+			sourceTree = "<group>";
+		};
+		F7081EBE2CCA342E0015D1EA /* Monument3Scene.usdz */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F7081EC12CCA342E0015D1EA /* Base */,
+			);
+			name = Monument3Scene.usdz;
+			sourceTree = "<group>";
+		};
+		F7081EBF2CCA342E0015D1EA /* Monument4Scene.usdz */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F7081EC32CCA342E0015D1EA /* Base */,
+			);
+			name = Monument4Scene.usdz;
+			sourceTree = "<group>";
+		};
+		F7081EC72CCA34420015D1EA /* Monument5Scene.usdz */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F7081EC82CCA34420015D1EA /* Base */,
+			);
+			name = Monument5Scene.usdz;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		83D456532A607A2500277EA8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		83D456542A607A2500277EA8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		83D456562A607A2500277EA8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"MapKitDemo/Preview Content\"";
+				DEVELOPMENT_TEAM = 9KZ9T3S7C5;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MapKitDemo/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "L'application utilise la caméra pour la réalité augmentée.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kangouu.MapKitDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		83D456572A607A2500277EA8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"MapKitDemo/Preview Content\"";
+				DEVELOPMENT_TEAM = 9KZ9T3S7C5;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MapKitDemo/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "L'application utilise la caméra pour la réalité augmentée.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kangouu.MapKitDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		83D456422A607A2400277EA8 /* Build configuration list for PBXProject "MapKitDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83D456532A607A2500277EA8 /* Debug */,
+				83D456542A607A2500277EA8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83D456552A607A2500277EA8 /* Build configuration list for PBXNativeTarget "MapKitDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83D456562A607A2500277EA8 /* Debug */,
+				83D456572A607A2500277EA8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 83D4563F2A607A2400277EA8 /* Project object */;
+}

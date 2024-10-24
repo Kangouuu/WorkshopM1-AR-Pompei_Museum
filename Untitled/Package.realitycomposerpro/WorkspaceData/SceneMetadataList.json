@@ -1,0 +1,26 @@
+{
+  "097B1188-6B32-4F24-A440-6E105736C436" : {
+    "objectMetadataList" : [
+      [
+        "097B1188-6B32-4F24-A440-6E105736C436",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "C65BCD38-8CD3-498B-B260-EFDECB1BE06B" : {
+    "objectMetadataList" : [
+      [
+        "C65BCD38-8CD3-498B-B260-EFDECB1BE06B",
+        "root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  }
+}
