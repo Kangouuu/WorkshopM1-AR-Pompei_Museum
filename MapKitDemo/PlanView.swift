@@ -196,11 +196,8 @@ struct MapView: UIViewRepresentable {
     func makeUIView(context: Context) -> MKMapView {
         let mapView = MKMapView(frame: .zero)
         
-        // Activer l'affichage des bâtiments 3D
-        mapView.showsBuildings = true
-        
         // Configuration de la caméra pour une vue 3D
-        let camera = MKMapCamera(lookingAtCenter: userLocation, fromDistance: 200, pitch: 80, heading: 0)
+        let camera = MKMapCamera(lookingAtCenter: userLocation, fromDistance: 500, pitch: 60, heading: 0)
         mapView.camera = camera
         mapView.mapType = .mutedStandard
         mapView.showsPointsOfInterest = false
@@ -216,11 +213,11 @@ struct MapView: UIViewRepresentable {
     }
 
     func updateUIView(_ mapView: MKMapView, context: Context) {
-        // Mise à jour de la caméra pour une vue 3D plus prononcée
+        // Mise à jour de la caméra pour ajuster l'angle et la distance en vue 3D
         let camera = MKMapCamera(lookingAtCenter: selectedMonument.coordinate,
-                                 fromDistance: 150,  // Distance ajustée pour être plus proche du monument
-                                 pitch: 85,          // Inclinaison élevée pour une vue en perspective
-                                 heading: 45)        // Angle horizontal ajusté pour un effet oblique
+                                 fromDistance: 250,  // Distance ajustée pour se rapprocher du monument
+                                 pitch: 100,          // Augmentation de l'inclinaison pour une vue plus 3D
+                                 heading: 60)        // Ajustement du heading pour l'angle horizontal
         mapView.setCamera(camera, animated: true)
     }
     
@@ -250,7 +247,7 @@ struct MapView: UIViewRepresentable {
         }
         
         func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-            // Empêcher l'utilisateur de naviguer en dehors de la région définie
+            // Empêche l'utilisateur de naviguer en dehors de la région définie
             let currentRegion = mapView.region
             let maxLat = boundingRegion.center.latitude + boundingRegion.span.latitudeDelta / 2
             let minLat = boundingRegion.center.latitude - boundingRegion.span.latitudeDelta / 2
