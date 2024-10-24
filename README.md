@@ -1,6 +1,7 @@
 
 https://github.com/user-attachments/assets/a8ff3719-ad3b-4e2a-8788-51ea9c5f6921
-**3D Monument Explorer**
+
+**Pompei museum-projet fictif**
 
 Description
 3D Monument Explorer est une application mobile réalisée en Swift qui permet à l'utilisateur de scanner une image et d'afficher une carte 3D interactive avec des monuments modélisés en 3D. Chaque monument peut être exploré en détail en vue 3D pour une expérience immersive.
@@ -36,4 +37,4 @@ Poussez vers la branche (git push origin feature/NouvelleFonctionnalite)
 Ouvrez une Pull Request
 
 Auteurs
-LEAL Blandine - Développeur principal - @Kangouuu
+Développeur principal - @Kangouuu
