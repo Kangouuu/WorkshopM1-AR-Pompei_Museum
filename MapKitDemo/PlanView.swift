@@ -72,57 +72,19 @@ struct ARMapView: View {
                     }
                     .padding()
                 }
+                Spacer()
                 
-                // Interface pour sélectionner le monument
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        showPreviousMonument()
-                    }) {
-                        Image(systemName: "chevron.left.circle.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 50, height: 50)
-                            .foregroundColor(.black)
-                            .background(Color.white)
-                            .clipShape(Circle())
-                            .shadow(radius: 5)
-                    }
-                    .padding(.horizontal, 5)
-                    
-                    Text(monuments[selectedMonumentIndex].name)
-                        .font(.title)
-                        .padding()
-                    
-                    Button(action: {
-                        showNextMonument()
-                    }) {
-                        Image(systemName: "chevron.right.circle.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 50, height: 50)
-                            .foregroundColor(.black)
-                            .background(Color.white)
-                            .clipShape(Circle())
-                            .shadow(radius: 5)
-                    }
-                    .padding(.horizontal, 5)
-                    Spacer()
-                }
-                
-                // Bouton pour visualiser le monument sélectionné en AR
+                // Bouton pour afficher la scène AR du monument sélectionné
                 Button(action: {
                     showARView = true
                 }) {
-                    Text("Voir \(selectedMonument.name) en AR")
+                    Text("Voir en AR")
                         .padding()
                         .background(Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
                 .padding(.bottom, 20)
-                
-                Spacer()
             }
         }
         .sheet(isPresented: $showDetailView) {
@@ -148,7 +110,7 @@ struct ARMapView: View {
     }
 }
 
-// Vue AR pour visualiser un monument sélectionné
+// Nouveau ARSceneView pour afficher la scène AR et naviguer entre les monuments
 struct ARSceneView: UIViewControllerRepresentable {
     let monuments: [Monument]
     @Binding var selectedMonumentIndex: Int
@@ -161,8 +123,22 @@ struct ARSceneView: UIViewControllerRepresentable {
         let configuration = ARWorldTrackingConfiguration()
         sceneView.session.run(configuration)
 
-        // Charger le monument sélectionné
+        // Charger le premier monument
         loadMonumentModel(sceneView: sceneView, modelFileName: monuments[selectedMonumentIndex].modelFileName)
+
+        // Ajouter boutons de navigation pour se déplacer entre les monuments
+        let previousButton = UIButton(type: .system)
+        previousButton.setTitle("Précédent", for: .normal)
+        previousButton.frame = CGRect(x: 20, y: viewController.view.bounds.height - 60, width: 100, height: 40)
+        previousButton.addTarget(context.coordinator, action: #selector(context.coordinator.showPreviousMonument), for: .touchUpInside)
+
+        let nextButton = UIButton(type: .system)
+        nextButton.setTitle("Suivant", for: .normal)
+        nextButton.frame = CGRect(x: viewController.view.bounds.width - 120, y: viewController.view.bounds.height - 60, width: 100, height: 40)
+        nextButton.addTarget(context.coordinator, action: #selector(context.coordinator.showNextMonument), for: .touchUpInside)
+
+        viewController.view.addSubview(previousButton)
+        viewController.view.addSubview(nextButton)
 
         return viewController
     }
@@ -187,6 +163,35 @@ struct ARSceneView: UIViewControllerRepresentable {
             lightNode.light = light
             lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
             scene.rootNode.addChildNode(lightNode)
+        }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        return Coordinator(self)
+    }
+
+    class Coordinator: NSObject {
+        var parent: ARSceneView
+        var sceneView: ARSCNView?
+
+        init(_ parent: ARSceneView) {
+            self.parent = parent
+        }
+
+        // Naviguer vers le monument précédent
+        @objc func showPreviousMonument() {
+            parent.selectedMonumentIndex = (parent.selectedMonumentIndex - 1 + parent.monuments.count) % parent.monuments.count
+            if let sceneView = sceneView {
+                parent.loadMonumentModel(sceneView: sceneView, modelFileName: parent.monuments[parent.selectedMonumentIndex].modelFileName)
+            }
+        }
+
+        // Naviguer vers le monument suivant
+        @objc func showNextMonument() {
+            parent.selectedMonumentIndex = (parent.selectedMonumentIndex + 1) % parent.monuments.count
+            if let sceneView = sceneView {
+                parent.loadMonumentModel(sceneView: sceneView, modelFileName: parent.monuments[parent.selectedMonumentIndex].modelFileName)
+            }
         }
     }
 }
