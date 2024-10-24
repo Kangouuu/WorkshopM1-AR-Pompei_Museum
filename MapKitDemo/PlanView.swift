@@ -1,82 +1,47 @@
+//MVP final partie fonctionelle
 import SwiftUI
 import MapKit
-import SceneKit
 import ARKit
+import SceneKit
 
-// Vue principale qui gère l'AR et la carte
-struct ARMapView: View {
-    let monuments = [
-        Monument(name: "Monument 1", coordinate: CLLocationCoordinate2D(latitude: 43.654823, longitude: -79.391623)),
-        Monument(name: "Monument 2", coordinate: CLLocationCoordinate2D(latitude: 43.654957, longitude: -79.393223)),
-        Monument(name: "Monument 3", coordinate: CLLocationCoordinate2D(latitude: 43.655, longitude: -79.394))
-    ]
-    
-    let ago = CLLocationCoordinate2D(latitude: 43.653823848647725, longitude: -79.3925230435043)
-    
-    @State private var selectedMonument = Monument(name: "Monument 1", coordinate: CLLocationCoordinate2D(latitude: 43.654823, longitude: -79.391623))
-    @State private var showMap = false
-    @State private var mapPosition: CGPoint? = nil
-    @State private var mapSize: CGSize? = nil
+// Représentation de la carte MapKit en SwiftUI
+struct MapView: UIViewRepresentable {
+    let monuments: [Monument]
+    let userLocation: CLLocationCoordinate2D
+    @Binding var selectedMonument: Monument
 
-    var body: some View {
-        ZStack {
-            ARImageDetectionView(userLocation: ago, showMap: $showMap, mapPosition: $mapPosition, mapSize: $mapSize)
-                .edgesIgnoringSafeArea(.all)
-            
-            if showMap, let mapPosition = mapPosition, let mapSize = mapSize {
-                MapView(monuments: monuments, userLocation: ago, selectedMonument: $selectedMonument)
-                    .frame(width: mapSize.width, height: mapSize.height)
-                    .cornerRadius(10)
-                    .background(Color.white.opacity(0.9))
-                    .position(mapPosition)
-                    .transition(.move(edge: .bottom))
-                    .animation(.easeInOut, value: showMap)
-            }
-            
-            VStack {
-                Spacer()
-                
-                HStack {
-                    Button(action: showPreviousMonument) {
-                        Text("Monument Précédent")
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                    }
-                    
-                    Button(action: showNextMonument) {
-                        Text("Monument Suivant")
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                    }
-                }
-                .padding(.bottom, 50)
-            }
+    func makeUIView(context: Context) -> MKMapView {
+        let mapView = MKMapView(frame: .zero)
+        
+        // Configuration initiale de la caméra pour une vue 3D
+        let camera = MKMapCamera(lookingAtCenter: userLocation,
+                                 fromDistance: 500,
+                                 pitch: 60,  // Inclinaison pour vue 3D
+                                 heading: 0) // Orientation
+        mapView.camera = camera
+        mapView.mapType = .standard
+        
+        // Ajout des annotations pour les monuments
+        for monument in monuments {
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = monument.coordinate
+            annotation.title = monument.name
+            mapView.addAnnotation(annotation)
         }
-    }
-    
-    private func showPreviousMonument() {
-        if let currentIndex = monuments.firstIndex(of: selectedMonument) {
-            let previousIndex = (currentIndex - 1 + monuments.count) % monuments.count
-            selectedMonument = monuments[previousIndex]
-        }
+        
+        return mapView
     }
 
-    private func showNextMonument() {
-        if let currentIndex = monuments.firstIndex(of: selectedMonument) {
-            let nextIndex = (currentIndex + 1) % monuments.count
-            selectedMonument = monuments[nextIndex]
-        }
+    func updateUIView(_ mapView: MKMapView, context: Context) {
+        let camera = MKMapCamera(lookingAtCenter: selectedMonument.coordinate,
+                                 fromDistance: 500,
+                                 pitch: 60,
+                                 heading: 0)
+        mapView.setCamera(camera, animated: true)
     }
 }
 
-#Preview {
-    ARMapView()
-}
-
+// Structure Monument conforme à Identifiable et Equatable
 struct Monument: Identifiable, Equatable {
     let id = UUID()
     let name: String
@@ -87,16 +52,18 @@ struct Monument: Identifiable, Equatable {
     }
 }
 
+// Vue AR avec tracking et détection d'image personnalisée
 struct ARImageDetectionView: UIViewRepresentable {
     let userLocation: CLLocationCoordinate2D
     @Binding var showMap: Bool
     @Binding var mapPosition: CGPoint?
-    @Binding var mapSize: CGSize?
+    @Binding var mapSize: CGSize?  // Ajouter une variable pour la taille de la carte
 
     func makeUIView(context: Context) -> ARSCNView {
         let sceneView = ARSCNView(frame: .zero)
         let configuration = ARWorldTrackingConfiguration()
         
+        // Charger les images à détecter à partir du groupe "AR Resources"
         if let referenceImages = ARReferenceImage.referenceImages(inGroupNamed: "AR Resources", bundle: nil) {
             configuration.detectionImages = referenceImages
             configuration.maximumNumberOfTrackedImages = 1
@@ -122,6 +89,7 @@ struct ARImageDetectionView: UIViewRepresentable {
             self.parent = parent
         }
         
+        // Méthode appelée lorsque l'image est détectée
         func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
             if let imageAnchor = anchor as? ARImageAnchor {
                 let referenceImage = imageAnchor.referenceImage
@@ -130,6 +98,7 @@ struct ARImageDetectionView: UIViewRepresentable {
                     self.parent.showMap = true
                 }
                 
+                // Créer un plan correspondant à la taille de l'image détectée
                 let plane = SCNPlane(width: referenceImage.physicalSize.width, height: referenceImage.physicalSize.height)
                 
                 let material = SCNMaterial()
@@ -140,21 +109,25 @@ struct ARImageDetectionView: UIViewRepresentable {
                 planeNode.eulerAngles.x = -.pi / 2
                 node.addChildNode(planeNode)
                 
+                // Mettre à jour la position et la taille de la carte
                 updateMapPosition(renderer: renderer, node: planeNode)
-                updateMapSize(referenceImage: referenceImage)
+                updateMapSize(referenceImage: referenceImage)  // Mettre à jour la taille
             }
         }
         
+        // Méthode appelée lorsque l'image est suivie en continu (tracking)
         func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
             if let imageAnchor = anchor as? ARImageAnchor {
                 DispatchQueue.main.async {
                     self.parent.showMap = imageAnchor.isTracked
                 }
                 
+                // Mettre à jour la position de la carte
                 updateMapPosition(renderer: renderer, node: node)
             }
         }
 
+        // Méthode appelée lorsque l'image sort du cadre
         func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
             if anchor is ARImageAnchor {
                 DispatchQueue.main.async {
@@ -163,9 +136,11 @@ struct ARImageDetectionView: UIViewRepresentable {
             }
         }
         
+        // Met à jour la position de la carte en projetant les coordonnées 3D en 2D
         func updateMapPosition(renderer: SCNSceneRenderer, node: SCNNode) {
             guard let sceneView = renderer as? ARSCNView else { return }
             
+            // Projeter la position 3D de l'image sur l'écran
             let projectedPoint = sceneView.projectPoint(node.position)
             let screenPoint = CGPoint(x: CGFloat(projectedPoint.x), y: CGFloat(projectedPoint.y))
             
@@ -174,12 +149,15 @@ struct ARImageDetectionView: UIViewRepresentable {
             }
         }
         
+        // Met à jour la taille de la carte en fonction des dimensions physiques de l'image détectée
         func updateMapSize(referenceImage: ARReferenceImage) {
             let physicalWidth = referenceImage.physicalSize.width
             let physicalHeight = referenceImage.physicalSize.height
-            let screenScale = UIScreen.main.scale
+            let screenScale = UIScreen.main.scale  // Facteur d'échelle de l'écran (pour les écrans Retina, etc.)
             
-            let size = CGSize(width: physicalWidth * screenScale * 1000, height: physicalHeight * screenScale * 1000)
+            // Convertir la taille physique en points d'écran (en tenant compte de l'échelle)
+            let size = CGSize(width: physicalWidth * screenScale * 1000,  // Ajuster le facteur d'échelle pour correspondre à la taille de la vue
+                              height: physicalHeight * screenScale * 1000)
             
             DispatchQueue.main.async {
                 self.parent.mapSize = size
@@ -188,135 +166,40 @@ struct ARImageDetectionView: UIViewRepresentable {
     }
 }
 
-struct MapView: UIViewRepresentable {
-    let monuments: [Monument]
-    let userLocation: CLLocationCoordinate2D
-    @Binding var selectedMonument: Monument
-
-    func makeUIView(context: Context) -> MKMapView {
-        let mapView = MKMapView(frame: .zero)
-        
-        // Configuration de la caméra pour une vue 3D
-        let camera = MKMapCamera(lookingAtCenter: userLocation, fromDistance: 500, pitch: 60, heading: 0)
-        mapView.camera = camera
-        mapView.mapType = .mutedStandard
-        mapView.showsPointsOfInterest = false
-        mapView.showsUserLocation = false
-        mapView.delegate = context.coordinator
-
-        for monument in monuments {
-            let annotation = Custom3DAnnotation(coordinate: monument.coordinate, title: monument.name)
-            mapView.addAnnotation(annotation)
-        }
-        
-        return mapView
-    }
-
-    func updateUIView(_ mapView: MKMapView, context: Context) {
-        // Mise à jour de la caméra pour ajuster l'angle et la distance en vue 3D
-        let camera = MKMapCamera(lookingAtCenter: selectedMonument.coordinate,
-                                 fromDistance: 250,  // Distance ajustée pour se rapprocher du monument
-                                 pitch: 100,          // Augmentation de l'inclinaison pour une vue plus 3D
-                                 heading: 60)        // Ajustement du heading pour l'angle horizontal
-        mapView.setCamera(camera, animated: true)
-    }
+// Vue principale qui gère l'AR et la carte
+struct ContentView: View {
+    let monuments = [
+        Monument(name: "Monument 1", coordinate: CLLocationCoordinate2D(latitude: 43.654823, longitude: -79.391623)),
+        Monument(name: "Monument 2", coordinate: CLLocationCoordinate2D(latitude: 43.654957, longitude: -79.393223))
+    ]
     
-    func makeCoordinator() -> Coordinator {
-        return Coordinator(self, monuments: monuments)
-    }
+    let ago = CLLocationCoordinate2D(latitude: 43.653823848647725, longitude: -79.3925230435043)
+    
+    @State private var selectedMonument = Monument(name: "Monument 1", coordinate: CLLocationCoordinate2D(latitude: 43.654823, longitude: -79.391623))
+    @State private var showMap = false
+    @State private var mapPosition: CGPoint? = nil
+    @State private var mapSize: CGSize? = nil  // Ajouter une variable d'état pour la taille
 
-    class Coordinator: NSObject, MKMapViewDelegate {
-        var parent: MapView
-        var monuments: [Monument]
-
-        // Définir les limites autorisées
-        var boundingRegion: MKCoordinateRegion
-        
-        init(_ parent: MapView, monuments: [Monument]) {
-            self.parent = parent
-            self.monuments = monuments
+    var body: some View {
+        ZStack {
+            // Afficher la vue AR avec tracking
+            ARImageDetectionView(userLocation: ago, showMap: $showMap, mapPosition: $mapPosition, mapSize: $mapSize)
+                .edgesIgnoringSafeArea(.all)
             
-            let coordinates = monuments.map { $0.coordinate }
-            let latitudes = coordinates.map { $0.latitude }
-            let longitudes = coordinates.map { $0.longitude }
-            let center = CLLocationCoordinate2D(latitude: (latitudes.max()! + latitudes.min()!) / 2,
-                                                longitude: (longitudes.max()! + longitudes.min()!) / 2)
-            let span = MKCoordinateSpan(latitudeDelta: (latitudes.max()! - latitudes.min()!) * 1.5,
-                                        longitudeDelta: (longitudes.max()! - longitudes.min()!) * 1.5)
-            boundingRegion = MKCoordinateRegion(center: center, span: span)
-        }
-        
-        func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-            // Empêche l'utilisateur de naviguer en dehors de la région définie
-            let currentRegion = mapView.region
-            let maxLat = boundingRegion.center.latitude + boundingRegion.span.latitudeDelta / 2
-            let minLat = boundingRegion.center.latitude - boundingRegion.span.latitudeDelta / 2
-            let maxLon = boundingRegion.center.longitude + boundingRegion.span.longitudeDelta / 2
-            let minLon = boundingRegion.center.longitude - boundingRegion.span.longitudeDelta / 2
-            
-            let currentMaxLat = currentRegion.center.latitude + currentRegion.span.latitudeDelta / 2
-            let currentMinLat = currentRegion.center.latitude - currentRegion.span.latitudeDelta / 2
-            let currentMaxLon = currentRegion.center.longitude + currentRegion.span.longitudeDelta / 2
-            let currentMinLon = currentRegion.center.longitude - currentRegion.span.longitudeDelta / 2
-            
-            // Si la région actuelle dépasse les limites, on la réinitialise
-            if currentMaxLat > maxLat || currentMinLat < minLat || currentMaxLon > maxLon || currentMinLon < minLon {
-                mapView.setRegion(boundingRegion, animated: true)
+            // Afficher la carte quand l'image est détectée
+            if showMap, let mapPosition = mapPosition, let mapSize = mapSize {
+                MapView(monuments: monuments, userLocation: ago, selectedMonument: $selectedMonument)
+                    .frame(width: mapSize.width, height: mapSize.height)  // Ajuster la taille de la carte en fonction de l'image détectée
+                    .cornerRadius(10)
+                    .background(Color.white.opacity(0.9))
+                    .position(mapPosition)  // Positionner la carte sur l'image détectée
+                    .transition(.move(edge: .bottom))
+                    .animation(.easeInOut, value: showMap)
             }
-        }
-
-        // Fonction pour rendre les annotations en 3D
-        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-            guard let customAnnotation = annotation as? Custom3DAnnotation else { return nil }
-
-            let identifier = "3DMonument"
-            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-
-            if annotationView == nil {
-                annotationView = MKAnnotationView(annotation: customAnnotation, reuseIdentifier: identifier)
-                annotationView?.canShowCallout = false
-                
-                // Création d'une scène SCNNode directement dans la carte
-                let scene = SCNScene(named: "WorkshopScene.usdz")
-                
-                if let modelNode = scene?.rootNode.childNodes.first {
-                    let monumentSizeFactor: Float = 0.1
-                    modelNode.scale = SCNVector3(monumentSizeFactor, monumentSizeFactor, monumentSizeFactor)
-                    modelNode.position = SCNVector3(0, 1, 0)
-                    modelNode.eulerAngles = SCNVector3(0, Float.pi / 4, 0)
-
-                    // Lumière directionnelle pour éclairer l'objet 3D
-                    let lightNode = SCNNode()
-                    let light = SCNLight()
-                    light.type = .directional
-                    light.intensity = 1000
-                    lightNode.light = light
-                    lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
-                    modelNode.addChildNode(lightNode)
-                    
-                    // Ajouter la vue 3D en tant que sous-vue de l'annotation
-                    let scnView = SCNView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-                    scnView.scene = scene
-                    scnView.allowsCameraControl = true
-                    scnView.backgroundColor = UIColor.clear
-                    
-                    annotationView?.addSubview(scnView)
-                }
-            } else {
-                annotationView?.annotation = annotation
-            }
-
-            return annotationView
         }
     }
 }
 
-class Custom3DAnnotation: NSObject, MKAnnotation {
-    var coordinate: CLLocationCoordinate2D
-    var title: String?
-
-    init(coordinate: CLLocationCoordinate2D, title: String?) {
-        self.coordinate = coordinate
-        self.title = title
-    }
+#Preview {
+    ContentView()
 }
