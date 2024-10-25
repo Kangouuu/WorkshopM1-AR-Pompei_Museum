@@ -1,7 +1,7 @@
 **Pompei museum-projet fictif**
 
 Description
-3D Monument Explorer est une application mobile réalisée en Swift qui permet à l'utilisateur de scanner une image et d'afficher une carte 3D interactive avec des monuments modélisés en 3D. Chaque monument peut être exploré en détail en vue 3D pour une expérience immersive.
+Pompei museum est une application mobile réalisée en Swift qui permet à l'utilisateur de scanner une image et d'afficher une carte 3D interactive avec des monuments modélisés en 3D. Chaque monument peut être exploré en détail en vue 3D pour une expérience immersive.
 
 Fonctionnalités
 Scan d'image : Scannez une image pour identifier un monument.
